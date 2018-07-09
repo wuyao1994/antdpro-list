@@ -1,12 +1,10 @@
 import React from 'react';
-import { routerRedux, Switch } from 'dva/router';
+import { routerRedux, Switch,Route } from 'dva/router';
 import { LocaleProvider } from 'antd';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 import { getRouterData } from './common/router';
-import Authorized from './utils/Authorized';
 
 const { ConnectedRouter } = routerRedux;
-const { AuthorizedRoute } = Authorized;
 
 function RouterConfig({ history, app }) {
   const routerData = getRouterData(app);
@@ -15,7 +13,7 @@ function RouterConfig({ history, app }) {
     <LocaleProvider locale={zhCN}>
       <ConnectedRouter history={history}>
         <Switch>
-          <AuthorizedRoute
+          <Route
             path="/"
             render={props => <BasicLayout {...props} />}
           />
