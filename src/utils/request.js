@@ -1,7 +1,52 @@
 import fetch from 'dva/fetch';
 import { notification } from 'antd';
-import { routerRedux } from 'dva/router';
-import store from '../index';
+import AWS from 'aws-sdk';
+
+AWS.config.update({
+  region: "us-east-2",
+  accessKeyId: "AKIAIR4N6UE4RVWIOJAQ",
+  secretAccessKey: "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",
+});
+AWS.config.setPromisesDependency(Promise);
+
+const docClient = new AWS.DynamoDB.DocumentClient();
+
+
+
+function addItem(params) {
+  // const table = "TEST_TABLE";
+  // const id= "123456789";
+  // const params = {
+  //   TableName: table,
+  //   Item:{
+  //     "ID": id,
+  //     "desc": "this is a description",
+  //     "calltimes": "180000002",
+  //     "status": "closed",
+  //     "time": "2017-07-01 00:00:00",
+  //     "flag": "1",
+  //   },
+  // };
+  docClient.put(params).promise().then((err,data) =>
+  {
+    console.log(err);
+    console.log(data);
+  });
+}
+
+function queryItems() {
+  const query = {
+    "TableName": "TEST_TABLE",
+    "Limit": 1000,
+  };
+  let response = {};
+  return docClient.scan(query).promise().then((data) => {
+      response = {
+        "list": data.Items,
+      }
+      return response;
+  });
+}
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -42,7 +87,7 @@ function checkStatus(response) {
  * @param  {object} [options] The options we want to pass to "fetch"
  * @return {object}           An object containing either "data" or "err"
  */
-export default function request(url, options) {
+function request(url, options) {
   const defaultOptions = {
     credentials: 'include',
   };
@@ -77,24 +122,13 @@ export default function request(url, options) {
       return response.json();
     })
     .catch(e => {
-      const { dispatch } = store;
       const status = e.name;
-      if (status === 401) {
-        dispatch({
-          type: 'login/logout',
-        });
-        return;
-      }
-      if (status === 403) {
-        dispatch(routerRedux.push('/exception/403'));
-        return;
-      }
-      if (status <= 504 && status >= 500) {
-        dispatch(routerRedux.push('/exception/500'));
-        return;
-      }
-      if (status >= 404 && status < 422) {
-        dispatch(routerRedux.push('/exception/404'));
-      }
+      console.log(status)
     });
+}
+
+export {
+  request,
+  queryItems,
+  addItem,
 }

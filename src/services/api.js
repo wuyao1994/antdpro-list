@@ -1,9 +1,10 @@
 import { stringify } from 'qs';
-import request from '../utils/request';
+import { request, queryItems } from '../utils/request';
 
 
 export async function queryRule(params) {
-  return request(`/api/rule?${stringify(params)}`);
+  // return request(`/api/rule?${stringify(params)}`);
+  return queryItems();
 }
 
 export async function removeRule(params) {

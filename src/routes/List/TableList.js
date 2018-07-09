@@ -135,17 +135,28 @@ export default class TableList extends PureComponent {
 
     const columns = [
       {
-        title: '规则编号',
-        dataIndex: 'no',
+        title: 'ID',
+        dataIndex: 'ID',
       },
       {
-        title: '描述',
-        dataIndex: 'description',
+        title: 'calltimes',
+        dataIndex: 'calltimes',
       },
       {
-        title: '更新时间',
-        dataIndex: 'updatedAt',
-        sorter: true,
+        title: 'desc',
+        dataIndex: 'desc',
+      },
+      {
+        title: 'flag',
+        dataIndex: 'flag',
+      },
+      {
+        title: 'status',
+        dataIndex: 'status',
+      },
+      {
+        title: 'time',
+        dataIndex: 'time',
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
     ];
