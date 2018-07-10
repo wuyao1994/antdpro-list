@@ -8,12 +8,14 @@ import {
   Button,
   Modal,
   message,
+  Select,
 } from 'antd';
 import StandardTable from 'components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './TableList.less';
 
+const Option = Select.Option;
 const FormItem = Form.Item;
 const getValue = obj =>
   Object.keys(obj)
@@ -36,24 +38,47 @@ const CreateForm = Form.create()(props => {
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="描述">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: 'Please input some description...' }],
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="ID">
+        {form.getFieldDecorator('ID', {
+          rules: [{ required: true, message: 'Please input ID...' }],
         })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="calltimes">
+        {form.getFieldDecorator('calltimes', {
+          rules: [{ required: true, message: 'Please input calltimes...' }],
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="desc">
+        {form.getFieldDecorator('desc', {
+          rules: [{ required: true, message: 'Please input desc...' }],
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="flag">
+        {form.getFieldDecorator('flag',{ initialValue: '1'})(<Select>
+          <Option value="1">1</Option>
+          <Option value="2">2</Option>
+          <Option value="3">3</Option>
+        </Select>)}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="status">
+        {form.getFieldDecorator('status', { initialValue: 'closed'})
+        (<Select>
+          <Option value="closed">closed</Option>
+          <Option value="open">open</Option>
+        </Select>)}
       </FormItem>
     </Modal>
   );
 });
 
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+@connect(({ list, loading }) => ({
+  list,
+  loading: loading.models.lsit,
 }))
 @Form.create()
 export default class TableList extends PureComponent {
   state = {
     modalVisible: false,
-    expandForm: false,
     selectedRows: [],
     formValues: {},
   };
@@ -61,7 +86,7 @@ export default class TableList extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/fetch',
+      type: 'list/fetch',
     });
   }
 
@@ -86,16 +111,8 @@ export default class TableList extends PureComponent {
     }
 
     dispatch({
-      type: 'rule/fetch',
+      type: 'list/fetch',
       payload: params,
-    });
-  };
-
-
-  toggleForm = () => {
-    const { expandForm } = this.state;
-    this.setState({
-      expandForm: !expandForm,
     });
   };
 
@@ -114,10 +131,8 @@ export default class TableList extends PureComponent {
   handleAdd = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/add',
-      payload: {
-        description: fields.desc,
-      },
+      type: 'list/add',
+      payload: fields,
     });
 
     message.success('添加成功');
@@ -128,7 +143,7 @@ export default class TableList extends PureComponent {
 
   render() {
     const {
-      rule: { data },
+      list: { data },
       loading,
     } = this.props;
     const { selectedRows, modalVisible } = this.state;

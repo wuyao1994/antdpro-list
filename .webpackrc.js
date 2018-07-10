@@ -8,6 +8,7 @@ export default {
       extraBabelPlugins: ['dva-hmr'],
     },
   },
+  devtool: 'eval-source-map',
   externals: {
     '@antv/data-set': 'DataSet',
     bizcharts: 'BizCharts',

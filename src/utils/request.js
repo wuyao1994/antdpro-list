@@ -14,23 +14,17 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 
 
 function addItem(params) {
-  // const table = "TEST_TABLE";
-  // const id= "123456789";
-  // const params = {
-  //   TableName: table,
-  //   Item:{
-  //     "ID": id,
-  //     "desc": "this is a description",
-  //     "calltimes": "180000002",
-  //     "status": "closed",
-  //     "time": "2017-07-01 00:00:00",
-  //     "flag": "1",
-  //   },
-  // };
-  docClient.put(params).promise().then((err,data) =>
+  const table = "TEST_TABLE";
+  const item = {
+    TableName: table,
+    Item:{
+      ...params,
+      "time": new Date(),
+    },
+  };
+  return docClient.put(item).promise().then((err, data) =>
   {
-    console.log(err);
-    console.log(data);
+    return queryItems();
   });
 }
 
@@ -39,9 +33,8 @@ function queryItems() {
     "TableName": "TEST_TABLE",
     "Limit": 1000,
   };
-  let response = {};
   return docClient.scan(query).promise().then((data) => {
-      response = {
+      const response = {
         "list": data.Items,
       }
       return response;

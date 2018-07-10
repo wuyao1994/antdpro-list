@@ -1,7 +1,7 @@
-import { queryRule, removeRule, addRule } from '../services/api';
+import { queryList, addList } from '../services/api';
 
 export default {
-  namespace: 'rule',
+  namespace: 'list',
 
   state: {
     data: {
@@ -12,22 +12,14 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryRule, payload);
+      const response = yield call(queryList, payload);
       yield put({
         type: 'save',
         payload: response,
       });
     },
     *add({ payload, callback }, { call, put }) {
-      const response = yield call(addRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
-    },
-    *remove({ payload, callback }, { call, put }) {
-      const response = yield call(removeRule, payload);
+      const response = yield call(addList, payload);
       yield put({
         type: 'save',
         payload: response,
