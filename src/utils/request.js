@@ -22,9 +22,12 @@ function addItem(params) {
       "time": new Date(),
     },
   };
-  return docClient.put(item).promise().then((err, data) =>
+  return docClient.put(item).promise().then(() =>
   {
     return queryItems();
+  }).catch(e => {
+    const status = e.name;
+    console.log(status)
   });
 }
 
@@ -38,6 +41,9 @@ function queryItems() {
         "list": data.Items,
       }
       return response;
+  }).catch(e => {
+    const status = e.name;
+    console.log(status)
   });
 }
 

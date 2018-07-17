@@ -1,4 +1,4 @@
-import { queryList, addList } from '../services/api';
+import { queryItems,addItem } from '../utils/request'
 
 export default {
   namespace: 'list',
@@ -12,14 +12,14 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryList, payload);
+      const response = yield queryItems();
       yield put({
         type: 'save',
         payload: response,
       });
     },
     *add({ payload, callback }, { call, put }) {
-      const response = yield call(addList, payload);
+      const response = yield addItem(payload);
       yield put({
         type: 'save',
         payload: response,
