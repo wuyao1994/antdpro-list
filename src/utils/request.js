@@ -3,48 +3,56 @@ import { notification } from 'antd';
 import AWS from 'aws-sdk';
 
 AWS.config.update({
-  region: "us-east-2",
-  accessKeyId: "AKIAIR4N6UE4RVWIOJAQ",
-  secretAccessKey: "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",
+  region: 'us-east-2',
+  accessKeyId: 'AKIAIR4N6UE4RVWIOJAQ',
+  secretAccessKey: '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',
 });
 AWS.config.setPromisesDependency(Promise);
 
 const docClient = new AWS.DynamoDB.DocumentClient();
 
-
-
 function addItem(params) {
-  const table = "TEST_TABLE";
+  const table = 'TEST_TABLE';
   const item = {
     TableName: table,
-    Item:{
+    Item: {
       ...params,
-      "time": new Date(),
+      time: new Date(),
     },
   };
-  return docClient.put(item).promise().then(() =>
-  {
-    return queryItems();
-  }).catch(e => {
-    const status = e.name;
-    console.log(status)
-  });
+  return docClient
+    .put(item)
+    .promise()
+    .then(() => {
+      return queryItems();
+    })
+    .catch(e => {
+      const response = {
+        err: e.name,
+      };
+      return response;
+    });
 }
 
 function queryItems() {
   const query = {
-    "TableName": "TEST_TABLE",
-    "Limit": 1000,
+    TableName: 'TEST_TABLE',
+    Limit: 1000,
   };
-  return docClient.scan(query).promise().then((data) => {
+  return docClient
+    .scan(query)
+    .promise()
+    .then(data => {
       const response = {
-        "list": data.Items,
-      }
+        list: data.Items,
+      };
       return response;
-  }).catch(e => {
-    const status = e.name;
-    console.log(status)
-  });
+    })
+    .catch(e => {
+      const status = e.name;
+      console.log(status);
+      return e;
+    });
 }
 
 const codeMessage = {
@@ -122,12 +130,8 @@ function request(url, options) {
     })
     .catch(e => {
       const status = e.name;
-      console.log(status)
+      console.log(status);
     });
 }
 
-export {
-  request,
-  queryItems,
-  addItem,
-}
+export { request, queryItems, addItem };

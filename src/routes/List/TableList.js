@@ -1,15 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import {
-  Card,
-  Form,
-  Input,
-  Button,
-  Modal,
-  message,
-  Select,
-} from 'antd';
+import { Card, Form, Input, Button, Modal, message, Select } from 'antd';
 import StandardTable from 'components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
@@ -54,18 +46,21 @@ const CreateForm = Form.create()(props => {
         })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="flag">
-        {form.getFieldDecorator('flag',{ initialValue: '1'})(<Select>
-          <Option value="1">1</Option>
-          <Option value="2">2</Option>
-          <Option value="3">3</Option>
-        </Select>)}
+        {form.getFieldDecorator('flag', { initialValue: '1' })(
+          <Select>
+            <Option value="1">1</Option>
+            <Option value="2">2</Option>
+            <Option value="3">3</Option>
+          </Select>
+        )}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="status">
-        {form.getFieldDecorator('status', { initialValue: 'closed'})
-        (<Select>
-          <Option value="closed">closed</Option>
-          <Option value="open">open</Option>
-        </Select>)}
+        {form.getFieldDecorator('status', { initialValue: 'closed' })(
+          <Select>
+            <Option value="closed">closed</Option>
+            <Option value="open">open</Option>
+          </Select>
+        )}
       </FormItem>
     </Modal>
   );
@@ -73,7 +68,7 @@ const CreateForm = Form.create()(props => {
 
 @connect(({ list, loading }) => ({
   list,
-  loading: loading.models.lsit,
+  loading: loading.models.list,
 }))
 @Form.create()
 export default class TableList extends PureComponent {
@@ -133,9 +128,19 @@ export default class TableList extends PureComponent {
     dispatch({
       type: 'list/add',
       payload: fields,
+    }).then(() => {
+      const {
+        list: { data },
+      } = this.props;
+      if (data.err) {
+        message.success('添加失败:' + data.err);
+        dispatch({
+          type: 'list/fetch',
+        });
+      } else {
+        message.success('添加成功');
+      }
     });
-
-    message.success('添加成功');
     this.setState({
       modalVisible: false,
     });

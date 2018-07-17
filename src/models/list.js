@@ -1,4 +1,4 @@
-import { queryItems,addItem } from '../utils/request'
+import { queryItems, addItem } from '../utils/request';
 
 export default {
   namespace: 'list',
@@ -7,6 +7,7 @@ export default {
     data: {
       list: [],
       pagination: {},
+      err: {},
     },
   },
 
